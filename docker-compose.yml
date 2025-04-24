@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./digens/backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./digens/backend:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/digens
+    depends_on:
+      - db
+
+  frontend:
+    build: ./digens/frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./digens/frontend:/app
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=digens
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: 
